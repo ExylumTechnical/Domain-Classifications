@@ -1,6 +1,7 @@
 import os
 import subprocess
 import re
+import sys
 
 def cleanString(input_string):
     # Define the regex for a valid domain
@@ -70,4 +71,9 @@ def report(fileName):
         # return the list
                 return returnList
 
-print(report(""))
+filePath=sys.argv[1]
+try:
+    os.path(filePath)
+    print(report(filePath))
+except:
+    print("file path does not exist")
