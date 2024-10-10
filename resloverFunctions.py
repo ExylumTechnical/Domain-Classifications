@@ -1,14 +1,22 @@
 import os
 import subprocess
+import re
 
-# domainlist=["thisdomaindoesnotresolvetoanyaddress.com","yahoo.com"];
+def cleanString(input_string):
+    # Define the regex for a valid domain
+    pattern = r'[^a-zA-Z0-9.-]'
+    # clean the domain string so that there are no unwanted commands in the file
+    cleaned_string = re.sub(pattern, '', input_string)    
+    return cleaned_string
 
-def checkResolution(ip):
+def checkResolution(domain):
 # checks to see if a domain resolves or not before running further lookups
 # subprocess is used instead of os.system because os.system will hang when it errors
 # subrpocess does not error out but returns an exception
+    # do some input checking
+    domain=cleanString(domain)
         try:
-                out=subprocess.check_output("nslookup "+i, shell=True);
+                out=subprocess.check_output("nslookup "+domain, shell=True);
                 return True;
         except:
                 return False;
@@ -62,23 +70,4 @@ def report(fileName):
         # return the list
                 return returnList
 
-print(report("./buffer.csv"))
-
-def main():
-# do a little bit of cleanup
-        os.system("rm buffer.csv")
-
-# Open the file and parse out the domains
-        data=open("./data.csv","r")
-        doesNotResolve=open("./buffer.csv","a")
-        lineBuffer=data.readline();
-        while(lineBuffer!=""):
-                lineContents=lineBuffer.split(",")
-## change this pointer to point to the domain name in the CSV
-                domain=lineContents[2]
-                classification=lineContents[1]
-                flag=checkResolution(domain)
-                if(flag==False):
-                        didntResolve=classification+","+domain
-                        doesNotResolve.writeLine(didntResolve)
-                lineBuffer=data.readline();
+print(report(""))
